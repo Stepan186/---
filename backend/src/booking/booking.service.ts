@@ -17,10 +17,10 @@ export class BookingService {
     }
 
     async create(dto: CreateBookingDto, currentUser: User) {
-        // const isBooked = await this.roomsService.getMany({ checkIn: dto.checkIn, checkOut: dto.checkOut });
-        // if (isBooked.length) {
-        //     throw new BadRequestException('В эти даты уже есть бронь');
-        // }
+        const isBooked = await this.roomsService.getMany({ checkIn: dto.checkIn, checkOut: dto.checkOut });
+        if (isBooked.length) {
+            throw new BadRequestException('В эти даты номер уже забронирован');
+        }
 
         if (currentUser.isVip) {
             dto.isVip = true;
