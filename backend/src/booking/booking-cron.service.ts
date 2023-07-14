@@ -17,9 +17,8 @@ export class BookingCronService {
     @Cron('* */1 * * *')
     @UseRequestContext()
     async deleteExpiredBooking() {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const bookings = await this.repo.find({ expiredAt: { $lte: yesterday } });
+        const currentDate = new Date();
+        const bookings = await this.repo.find({ expiredAt: { $lte: currentDate } });
         await this.repo.getEntityManager().removeAndFlush(bookings);
     }
 }
