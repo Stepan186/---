@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: 1creator/photostyle.backend
+    image: stepan186/etalon-tex
     restart: unless-stopped
     env_file:
       - ./.env
