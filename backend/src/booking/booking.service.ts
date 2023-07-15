@@ -18,7 +18,6 @@ export class BookingService {
 
     async create(dto: CreateBookingDto, currentUser: User) {
         const freeRooms = await this.roomsService.getMany({ checkIn: dto.checkIn, checkOut: dto.checkOut });
-        console.log(freeRooms);
         const isFree = freeRooms.filter(r => dto.room === r.id).length;
         if (!isFree) {
             throw new BadRequestException('В эти даты номер уже забронирован');
