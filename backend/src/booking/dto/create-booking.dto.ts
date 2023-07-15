@@ -1,5 +1,4 @@
 import { IsBooleanI18n, IsDateStringI18n, IsNumberI18n } from "@1creator/backend";
-import { IsBoolean } from "class-validator";
 
 export class CreateBookingDto {
     @IsNumberI18n()

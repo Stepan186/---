@@ -17,8 +17,10 @@ export class BookingService {
     }
 
     async create(dto: CreateBookingDto, currentUser: User) {
-        const isBooked = await this.roomsService.getMany({ checkIn: dto.checkIn, checkOut: dto.checkOut });
-        if (isBooked.length) {
+        const freeRooms = await this.roomsService.getMany({ checkIn: dto.checkIn, checkOut: dto.checkOut });
+        console.log(freeRooms);
+        const isFree = freeRooms.filter(r => dto.room === r.id).length;
+        if (!isFree) {
             throw new BadRequestException('В эти даты номер уже забронирован');
         }
 
@@ -34,7 +36,7 @@ export class BookingService {
     }
 
     async delete(dto: DeleteBookingDto, currentUser: User) {
-        const booking = await this.repo.findOneOrFail(dto, { populate: ["user"] });
+        const booking = await this.repo.findOneOrFail({ uuid: dto.uuid }, { populate: ["user"] });
         if (booking.user != currentUser && !currentUser.isAdmin) {
             throw new ForbiddenException('В доступе отказано');
         }

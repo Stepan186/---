@@ -15,12 +15,5 @@ services:
     ports:
       - "6379:6379"
 
-#  backend:
-#    image: 1creator/photostyle.backend
-#    restart: unless-stopped
-#    build:
-#      context: "./backend"
-
-
 volumes:
   database:
