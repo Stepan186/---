@@ -6,19 +6,14 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: example
-    volumes:
-      - database:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   redis:
     image: redis:rc-alpine
     restart: unless-stopped
-
-  backend:
-    image: stepan186/etalon-tex
-    restart: unless-stopped
-    env_file:
-      - ./.env
-
+    ports:
+      - "6379:6379"
 
 volumes:
   database:

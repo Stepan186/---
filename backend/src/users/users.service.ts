@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { User } from './user.entity';
-import { EntityRepository } from '@mikro-orm/postgresql';
-import { GetUserDto } from "./dto/get-user.dto";
-import { FilterQuery } from "@mikro-orm/core";
-import { createValidationException } from "@1creator/backend";
-import { CryptoService } from "../auth/auth/crypto.service";
-import { RegistrationDto } from "../auth/auth/dto/registration-dto";
+import {Injectable} from '@nestjs/common';
+import {InjectRepository} from '@mikro-orm/nestjs';
+import {User} from './entities/user.entity';
+import {EntityRepository} from '@mikro-orm/postgresql';
+import {GetUserDto} from "./dto/get-user.dto";
+import {FilterQuery} from "@mikro-orm/core";
+import {createValidationException} from "@1creator/backend";
+import {CryptoService} from "../auth/auth/crypto.service";
+import {RegistrationDto} from "../auth/auth/dto/registration-dto";
 
 @Injectable()
 export class UsersService {
@@ -35,7 +35,7 @@ export class UsersService {
         try {
             const where: FilterQuery<User> = dto;
             if (exceptUuid) {
-                where.uuid = { $ne: exceptUuid };
+                where.uuid = {$ne: exceptUuid};
             }
             await this.repo.findOneOrFail(where);
             return true;
@@ -45,8 +45,8 @@ export class UsersService {
     }
 
     async store(dto: RegistrationDto, _currentUser?: User): Promise<User> {
-        if (await this.isExists({ email: dto.email })) {
-            throw createValidationException({ email: ['Данный электронный адрес уже занят'] });
+        if (await this.isExists({email: dto.email})) {
+            throw createValidationException({email: ['Данный электронный адрес уже занят']});
         }
 
         if (dto.password) {

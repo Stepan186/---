@@ -1,16 +1,16 @@
-import { JwtService as NestJwtService } from '@nestjs/jwt';
-import { UsersService } from '../../users/users.service';
-import { IJwtTokens } from './interfaces/jwt-tokens.interface';
-import { Inject, Injectable, Request, UnauthorizedException } from '@nestjs/common';
-import { IDeviceDataMeta } from './interfaces/device-data.interface';
-import { RefreshTokenMeta } from './entities/refresh-token-meta.entity';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityRepository } from '@mikro-orm/postgresql';
-import { IJwtPayload } from './interfaces/jwt-payload.interface';
-import { v4 as generateUuid } from 'uuid';
-import { CryptoService } from '../auth/crypto.service';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { User } from "../../users/user.entity";
+import {JwtService as NestJwtService} from '@nestjs/jwt';
+import {UsersService} from '../../users/users.service';
+import {IJwtTokens} from './interfaces/jwt-tokens.interface';
+import {Injectable, Request, UnauthorizedException} from '@nestjs/common';
+import {IDeviceDataMeta} from './interfaces/device-data.interface';
+import {RefreshTokenMeta} from './entities/refresh-token-meta.entity';
+import {InjectRepository} from '@mikro-orm/nestjs';
+import {EntityRepository} from '@mikro-orm/postgresql';
+import {IJwtPayload} from './interfaces/jwt-payload.interface';
+import {v4 as generateUuid} from 'uuid';
+import {CryptoService} from '../auth/crypto.service';
+import {RefreshTokenDto} from './dto/refresh-token.dto';
+import {User} from "../../users/entities/user.entity";
 
 const UNKNOWN = 'unknown';
 const REFRESH_LIVE_MILLISECONDS = 1000 * 60 * 60 * 24 * 30; // 30 Дней
@@ -24,22 +24,22 @@ export class JwtService extends NestJwtService {
         private cryptoService: CryptoService,
         private usersService: UsersService
     ) {
-        super({ secret: String(process.env.SECRET_KEY) });
+        super({secret: String(process.env.SECRET_KEY)});
     }
 
     async getUserByJwt(token: string) {
         const data = await this.verify<IJwtPayload>(token);
-        return await this.usersService.get({ uuid: data.user.uuid });
+        return await this.usersService.get({uuid: data.user.uuid});
     }
 
-    async createTokens({ deviceIp, deviceName }: IDeviceDataMeta, user: User): Promise<IJwtTokens> {
+    async createTokens({deviceIp, deviceName}: IDeviceDataMeta, user: User): Promise<IJwtTokens> {
         const uuid = generateUuid();
 
         const accessToken = this.sign({
             uuid,
-            user: { uuid: user.uuid },
+            user: {uuid: user.uuid},
         },
-        { expiresIn: 60 * ACCESS_LIVE_MINUTES });
+        {expiresIn: 60 * ACCESS_LIVE_MINUTES});
         const refreshToken = generateUuid();
 
         /*
@@ -55,13 +55,13 @@ export class JwtService extends NestJwtService {
         });
         await this.repo.getEntityManager().flush();
 
-        return { accessToken, refreshToken };
+        return {accessToken, refreshToken};
     }
 
     async revokeRefreshToken(accessToken: string) {
         try {
             const payload = this.verify<IJwtPayload>(accessToken);
-            await this.repo.nativeDelete({ uuid: payload.uuid });
+            await this.repo.nativeDelete({uuid: payload.uuid});
         } catch (e) { /* empty */
         }
     }
@@ -78,14 +78,14 @@ export class JwtService extends NestJwtService {
             const refreshToken = await this.cryptoService.sha256(dto.refreshToken);
             const refreshTokenMeta = await this.repo.findOneOrFail({
                 refreshToken,
-                expiresAt: { $gt: new Date() },
+                expiresAt: {$gt: new Date()},
             });
 
-            const user = await this.usersService.get({ uuid: refreshTokenMeta.user.uuid });
-            await this.repo.getEntityManager().remove(refreshTokenMeta);
+            const user = await this.usersService.get({uuid: refreshTokenMeta.user.uuid});
+            this.repo.getEntityManager().remove(refreshTokenMeta);
 
             const tokens = await this.createTokens(deviceData, user);
-            return { user, tokens };
+            return {user, tokens};
         } catch (e) {
             throw new UnauthorizedException();
         }

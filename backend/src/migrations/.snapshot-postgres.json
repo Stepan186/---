@@ -6,63 +6,6 @@
   "tables": [
     {
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "title": {
-          "name": "title",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "price": {
-          "name": "price",
-          "type": "numeric(10,0)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "precision": 10,
-          "scale": 0,
-          "mappedType": "decimal"
-        }
-      },
-      "name": "room",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "room_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {}
-    },
-    {
-      "columns": {
         "uuid": {
           "name": "uuid",
           "type": "uuid",
@@ -138,16 +81,6 @@
           "primary": false,
           "nullable": false,
           "mappedType": "string"
-        },
-        "is_vip": {
-          "name": "is_vip",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
         }
       },
       "name": "user",
@@ -250,118 +183,6 @@
           ],
           "referencedTableName": "public.user",
           "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      }
-    },
-    {
-      "columns": {
-        "uuid": {
-          "name": "uuid",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "gen_random_uuid()",
-          "mappedType": "uuid"
-        },
-        "user_uuid": {
-          "name": "user_uuid",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "room_id": {
-          "name": "room_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "check_in": {
-          "name": "check_in",
-          "type": "timestamptz(0)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "check_out": {
-          "name": "check_out",
-          "type": "timestamptz(0)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "expired_at": {
-          "name": "expired_at",
-          "type": "timestamptz(0)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "is_vip": {
-          "name": "is_vip",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "default": "false",
-          "mappedType": "boolean"
-        }
-      },
-      "name": "booking",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "booking_pkey",
-          "columnNames": [
-            "uuid"
-          ],
-          "composite": false,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "booking_user_uuid_foreign": {
-          "constraintName": "booking_user_uuid_foreign",
-          "columnNames": [
-            "user_uuid"
-          ],
-          "localTableName": "public.booking",
-          "referencedColumnNames": [
-            "uuid"
-          ],
-          "referencedTableName": "public.user",
-          "updateRule": "cascade"
-        },
-        "booking_room_id_foreign": {
-          "constraintName": "booking_room_id_foreign",
-          "columnNames": [
-            "room_id"
-          ],
-          "localTableName": "public.booking",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.room",
           "updateRule": "cascade"
         }
       }
